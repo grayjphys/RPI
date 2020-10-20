@@ -1,0 +1,3 @@
+#! /bin/bash
+ rm WAVECAR XDATCAR vasprun.xml __pycache__/rewrite_POSCAR.cpython-35.pyc PCDAT OUTCAR OSZICAR IBZKPT erro.err EIGENVAL DOSCAR CONTCAR CHG* LOCPOT VLINE stdout vasp.out core.0 slurm* TAUCAR
+

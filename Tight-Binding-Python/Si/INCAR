@@ -1,0 +1,32 @@
+# Standard
+System = Si-Diamond
+
+# SCF
+ENCUT = 600.0
+Prec = Accurate
+SYMPREC = 1e-07
+ISMEAR = 0; SIGMA = 0.005
+ALGO = Normal
+NBANDS=50
+
+# NSCF
+ICHARG = 11
+
+# Relax
+EDIFF = 0.00000001
+EDIFFG = -0.0001
+#ISIF = 3
+#IBRION = 2
+
+#SCAN
+METAGGA = RTPSS
+
+# Output
+LWAVE = .TRUE.
+LCHARG = .TRUE.
+LORBIT=11
+
+# For Bluegene
+LPLANE=.FALSE.
+NSIM = 1
+NPAR = 16
