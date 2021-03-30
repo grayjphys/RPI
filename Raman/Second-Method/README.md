@@ -45,7 +45,7 @@ In order to calculate the Raman intensiry, you need the isotropic and anisotropi
 
  <img src="https://render.githubusercontent.com/render/math?math=\alpha_p=\frac{1}{3}\bigg(\frac{\partial\alpha_{ii}}{\partial p}%2B\frac{\partial\alpha_{jj}}{\partial p}%2B\frac{\partial\alpha_{kk}}{\partial p}\bigg)">
  
- <img src="https://render.githubusercontent.com/render/math?math=\begin{array}{r} r_{\mathrm{p}}^{2}=\frac{1}{2}\left(\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B\mid \frac{\partial \alpha_{j j}}{\partial p}-\right. \\ \left.\left.\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B6\left(\left|\frac{\partial \alpha_{i i}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}\right)\right)\end{array}">
+ <img src="https://render.githubusercontent.com/render/math?math=\begin{array}{r} \gamma_{\mathrm{p}}^{2}=\frac{1}{2}\left(\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B\mid \frac{\partial \alpha_{j j}}{\partial p}-\right. \\ \left.\left.\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B6\left(\left|\frac{\partial \alpha_{i i}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}\right)\right)\end{array}">
  
 The Raman intensity of a mode is then:
 
