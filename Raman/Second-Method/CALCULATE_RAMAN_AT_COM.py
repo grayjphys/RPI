@@ -14,36 +14,32 @@ p = Path('.') # This program should be run in a POL-[]-PROP-[] directory as desc
 folder = os.getcwd()
 data_name = folder[-12:]
 
-dirs = [x for x in p.iterdir() if x.is_dir() and "MODE" in x.name]
+dirs = [x for x in p.iterdir() if x.is_dir() and "MODE" in x.name] # Collects all directories of the form PYRIDINE-[]-MODE-[]
 dirs = np.sort(dirs)
 
 mol_name = "Pyridine"
 mol_name_caps = "PYRIDINE"
 
-Carb = 12.011  # mass in amu
-Nit = 14.007  # mass in amu
-Hel = 1.008  # mass in amu
+Carb = 12.011  # mass of carbon in amu
+Nit = 14.007  # mass of nitrogen  in amu
+Hyd = 1.008  # mass of hydrogen  in amu
 
-masses = [Carb,Carb,Carb,Carb,Carb,Nit,Hel,Hel,Hel,Hel,Hel]
+masses = [Carb,Carb,Carb,Carb,Carb,Nit,Hyd,Hyd,Hyd,Hyd,Hyd]
 
 skip = []
-# skip = [21,20]
+# if you want to skip specific modes, the code will account for that. for example: skip = [21,20]
 
-h = 0.0001
+h = 0.0001 # the step size for derivatives
 
-box_size = 11
-box_size_bohr = box_size * 1.8897259886
-displace_x = 0
-displace_y = 0
-displace_z = 0
+box_size = 11 # DFT box size in angstroms
+box_size_bohr = box_size * 1.8897259886 # \\ in bohr
 
 N = 2000  # number of timesteps
-A = 11  # number of atoms
-T = 0.02418884326509  # time interval in femtoseconds
-# T = 1/2000
+A = 11  # number of atoms in the molecule
+T = 0.02418884326509  # time interval in femtoseconds for fourier transform
 M = 27  # number of modes
 
-gamma = 0.1
+gamma = 0.1 # required to give lifetime to electronic transitions
 
 planck = 4.135667696E-15  # eV * s
 c = 2.99792458E10  # cm / s
@@ -63,17 +59,20 @@ Efield_y_plus = []
 Efield_z_minus = []
 Efield_z_plus = []
 
-for progress, d in enumerate(dirs):
+for progress, d in enumerate(dirs): # loop through vibrational modes, plus and minus
+
+    ### Read electric field files and create new files. This makes it easier to find the center of mass for each vibrational mode. ###
+    
     os.system("rm " + d.name + "/POS.dat " + d.name + "/VOX.dat")
     os.system("head -" + str(6+A) + " " + d.name + "/"+ mol_name +"-efield_x-1_1.cube | tail -" + str(A) + " | awk \'{print $3,$4,$5}\'>" + d.name + "/POS.dat")
     os.system("head -4 " + d.name + "/"+ mol_name +"-efield_x-1_1.cube | tail -1 | awk \'{print $1,$2}\'>>" + d.name+"/VOX.dat")
     os.system("head -5 " + d.name + "/"+ mol_name +"-efield_x-1_1.cube | tail -1 | awk \'{print $1,$3}\'>>" + d.name+"/VOX.dat")
     os.system("head -6 " + d.name + "/"+ mol_name +"-efield_x-1_1.cube | tail -1 | awk \'{print $1,$4}\'>>" + d.name+"/VOX.dat")
 
-
     vox = np.loadtxt(d.name + "/VOX.dat")
     vox_T = vox.T
 
+    ### There is a slight discrepancy between DFT box size and the size obtained from the electric field files. The factors take this into account. ###
     factor_x = box_size_bohr/(vox_T[0][0]*vox_T[1][0])
     factor_y = box_size_bohr/(vox_T[0][1]*vox_T[1][1])
     factor_z = box_size_bohr/(vox_T[0][2]*vox_T[1][2])
@@ -81,48 +80,25 @@ for progress, d in enumerate(dirs):
     pos = np.loadtxt(d.name + "/POS.dat")
     pos_T = pos.T
 
-    # com = np.array([np.sum([masses[e]*i for e, i in enumerate(pos_T[0])])*factor_x,
-	#   			    np.sum([masses[e]*i for e, i in enumerate(pos_T[1])])*factor_y,
-	#   			    np.sum([masses[e]*i for e, i in enumerate(pos_T[2])])*factor_z])/np.sum(masses)
-    # print(d.name)
-    # print(pos)
-    # print(com)
-
-    # x_range = vox_T[1][0]*np.arange(vox_T[0][0])*factor_x
-    # y_range = vox_T[1][1]*np.arange(vox_T[0][1])*factor_y
-    # z_range = vox_T[1][2]*np.arange(vox_T[0][2])*factor_z
-
+    ### calculate center of mass for each mode. ###
     com = np.array([np.sum([masses[e]*i for e, i in enumerate(pos_T[0])]),
 	  			    np.sum([masses[e]*i for e, i in enumerate(pos_T[1])]),
 	  			    np.sum([masses[e]*i for e, i in enumerate(pos_T[2])])])/np.sum(masses)
-    print(os.getcwd())
-    print(d.name)
-    print(pos)
-    print(com)
+
+#     print(os.getcwd())
+#     print(d.name)
+#     print(pos)
+#     print(com)
     
     x_range = vox_T[1][0]*np.arange(vox_T[0][0])
     y_range = vox_T[1][1]*np.arange(vox_T[0][1])
     z_range = vox_T[1][2]*np.arange(vox_T[0][2])
 
-    # smallest_com = []
-    # dist_com = 100
-    # count = 0
-    # count_com = 0
-
-    # for x in range(int(vox_T[0][0])):
-    #     for y in range(int(vox_T[0][1])):
-    #         for z in range(int(vox_T[0][2])):
-    #             vec = np.array([x*vox_T[1][0],y*vox_T[1][1],z*vox_T[1][2]])
-    #             dist_com_new = np.linalg.norm(com-vec)
-    #             if dist_com_new < dist_com:
-    #                 dist_com = dist_com_new
-    #                 smallest_com = [x,y,z]
-    #                 count_com = count
-    #             count += 1
-
-    # count_com = count_com + int(displace_x*vox_T[0][0]**2 + displace_y*vox_T[0][1] + displace_z)
-
     print("{0}%".format(50*progress/M))
+    
+    ### Find electric field values from the .cube files and interpolate the value at the center of mass. ###
+    ### The electric field is a vector, so you need (x,y,z) components. There is a separate .cube file for each direction and time. ###
+    
     efield_files_x = np.array([e for e in d.iterdir() if mol_name + "-efield_x-1_" in e.name])
     ex_nums = []
     order = []
@@ -132,6 +108,7 @@ for progress, d in enumerate(dirs):
         order = np.argsort(ex_nums)
     efield_files_x = efield_files_x[order]
     efield_x_values_minus = []
+	
     if "MINUS" in d.name:
         for file in efield_files_x:
             with open(file) as f:
@@ -145,6 +122,7 @@ for progress, d in enumerate(dirs):
                 efield_x_values_minus.append(interpolating_function(com)[0])
         Efield_x_minus.append(efield_x_values_minus)
     efield_x_values_plus = []
+
     if "PLUS" in d.name:
         for file in efield_files_x:
             with open(file) as f:
@@ -167,6 +145,7 @@ for progress, d in enumerate(dirs):
         order = np.argsort(ey_nums)
     efield_files_y = efield_files_y[order]
     efield_y_values_minus = []
+	
     if "MINUS" in d.name:
         for file in efield_files_y:
             with open(file) as f:
@@ -180,6 +159,7 @@ for progress, d in enumerate(dirs):
                 efield_y_values_minus.append(interpolating_function(com)[0])
         Efield_y_minus.append(efield_y_values_minus)
     efield_y_values_plus = []
+
     if "PLUS" in d.name:
         for file in efield_files_y:
             with open(file) as f:
@@ -202,6 +182,7 @@ for progress, d in enumerate(dirs):
         order = np.argsort(ez_nums)
     efield_files_z = efield_files_z[order]
     efield_z_values_minus = []
+	
     if "MINUS" in d.name:
         for file in efield_files_z:
             with open(file) as f:
@@ -215,6 +196,7 @@ for progress, d in enumerate(dirs):
                 efield_z_values_minus.append(interpolating_function(com)[0])
         Efield_z_minus.append(efield_z_values_minus)
     efield_z_values_plus = []
+
     if "PLUS" in d.name:
         for file in efield_files_z:
             with open(file) as f:
@@ -242,6 +224,7 @@ Efield_y_plus_fft = np.zeros((M,N),dtype=complex)
 Efield_z_minus_fft = np.zeros((M,N),dtype=complex)
 Efield_z_plus_fft = np.zeros((M,N),dtype=complex)
 
+### Fourier transform the fields to get the electric field in frequency space. ###
 for i in range(M):
     data = Efield_x_minus[i]
     Efield_x_minus_fft[i] = fft(data)
@@ -258,6 +241,7 @@ for i in range(M):
 
 print("************************** EFIELD DONE ****************************")
 
+### Dump the result into a pickle file. This is just in case something goes wrong later on. It will save a lot of time to just read the values in. ###
 with open('EFIELD_X_MINUS_FFT.pkl','wb') as file:
     pickle.dump(Efield_x_minus_fft, file)
 
@@ -287,7 +271,7 @@ Moment_y_plus = []
 Moment_z_minus = []
 Moment_z_plus = []
 
-for enum, d in enumerate(dirs):
+for enum, d in enumerate(dirs): # loop over each vibrational mode, plus and minus
     print("{0}%".format(50*enum/M))
     moments_x = []
     moments_y = []
