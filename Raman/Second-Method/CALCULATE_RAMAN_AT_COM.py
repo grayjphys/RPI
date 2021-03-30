@@ -1,14 +1,3 @@
-##############################################################################################################################
-##############################################################################################################################
-
-
-#    Changed Fourier Transform: changed the freqs to not have a factor of 2 pi
-
-
-##############################################################################################################################
-##############################################################################################################################
-
-
 import numpy as np
 import pickle
 from pathlib import Path
@@ -21,7 +10,7 @@ import matplotlib.pyplot as plt
 
 np.set_printoptions(threshold=sys.maxsize)
 
-p = Path('.')
+p = Path('.') # This program should be run in a POL-[]-PROP-[] directory as described in the README.md file
 folder = os.getcwd()
 data_name = folder[-12:]
 
