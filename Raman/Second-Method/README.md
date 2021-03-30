@@ -40,11 +40,17 @@ Necessary files for CP2K to be placed in the POL-[]-PROP-[] directories:
  
  The polarizability is determined from the electric field components, the dipole moment components, and a "gamma factor" which gives a lifetime to electronic transitions.
  <img src="https://render.githubusercontent.com/render/math?math=\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t\mathrm{e}^{i \omega t} E_{i}(t)}">
- 
+
+In order to calculate the Raman intensiry, you need the isotropic and anisotropic polarizability derivatives:
+
  <img src="https://render.githubusercontent.com/render/math?math=\alpha_p=\frac{1}{3}\bigg(\frac{\partial\alpha_{ii}}{\partial p}%2B\frac{\partial\alpha_{jj}}{\partial p}%2B\frac{\partial\alpha_{kk}}{\partial p}\bigg)">
  
  <img src="https://render.githubusercontent.com/render/math?math=\begin{array}{r} r_{\mathrm{p}}^{2}=\frac{1}{2}\left(\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B\mid \frac{\partial \alpha_{j j}}{\partial p}-\right. \\ \left.\left.\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}%2B6\left(\left|\frac{\partial \alpha_{i i}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}%2B\left|\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}\right)\right)\end{array}">
  
+The Raman intensity of a mode is then:
+
+ <img src="https://render.githubusercontent.com/render/math?math=\frac{\mathrm{d} \sigma}{\mathrm{d} \Omega}=\frac{\pi^{2}}{\varepsilon_{0}^{2}}\left(\tilde{v}_{\mathrm{in}}-\tilde{v}_{\mathrm{p}}\right)^{4} \frac{h}{8 \pi^{2} c \tilde{v}_{\mathrm{p}}}\left(\frac{45\left|\alpha_{\mathrm{P}}\right|^{2}+7 \gamma_{\mathrm{P}}^{2}}{45}\right) \frac{1}{1-\mathrm{e}^{-h c \tilde{v}_{\mathrm{p}} / k_{\mathrm{b}} T}}">
+
 
 
 
