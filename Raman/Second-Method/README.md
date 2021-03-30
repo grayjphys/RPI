@@ -41,7 +41,7 @@ Necessary files for CP2K to be placed in the POL-[]-PROP-[] directories:
  The polarizability is determined from the electric field components, the dipole moment components, and a "gamma factor" which gives a lifetime to electronic transitions.
  <img src="https://render.githubusercontent.com/render/math?math=\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t\mathrm{e}^{i \omega t} E_{i}(t)}">
  
- <img src="https://render.githubusercontent.com/render/math?math=\alpha_p = \frac{1}{3}\bigg(\frac{\partial\alpha_{ii}}{\partial p}+\frac{\partial\alpha_{jj}}{\partial p}+\frac{\partial\alpha_{kk}}{\partial p}\bigg)">
+ <img src="https://render.githubusercontent.com/render/math?math=\alpha_p=\frac{1}{3}\bigg(\frac{\partial\alpha_{ii}}{\partial p}+\frac{\partial\alpha_{jj}}{\partial p}+\frac{\partial\alpha_{kk}}{\partial p}\bigg)">
  
  <img src="https://render.githubusercontent.com/render/math?math=">
  
