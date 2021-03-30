@@ -35,3 +35,7 @@ Necessary files for CP2K to be placed in the POL-[]-PROP-[] directories:
 
    Once your jobs complete, run the ./CALC-RAMAN-AT-COM.sh command. This goes through and takes the electric fields and dipole moments and fourier transforms 
    them into frequency space, then reads in the vibrational modes (To be calculated with the VIBRATIONAL_ANALYSIS routine in CP2K), and returns the Raman              intensities for each mode and each pol-[]-prop-[], then it averages over the pol-[]-prop-[] results to get a Raman spectrum.
+   
+ Mathematical formulae:
+ 
+$\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t \mathrm{e}^{i \omega t} E_{i}(t)}$
