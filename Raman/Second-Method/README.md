@@ -38,5 +38,14 @@ Necessary files for CP2K to be placed in the POL-[]-PROP-[] directories:
    
  Mathematical formulae:
  
+ The polarizability is determined from the electric field components, the dipole moment components, and a "gamma factor" which gives a lifetime to electronic transitions.
  <img src="https://render.githubusercontent.com/render/math?math=\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t\mathrm{e}^{i \omega t} E_{i}(t)}">
+ 
+ <img src="https://render.githubusercontent.com/render/math?math=\begin{array}{c}
+\alpha_{\mathrm{p}}=\frac{1}{3}\left(\frac{\partial \alpha_{i i}}{\partial p}+\frac{\partial \alpha_{j j}}{\partial p}+\frac{\partial \alpha_{k k}}{\partial p}\right) \\
+r_{\mathrm{p}}^{2}=\frac{1}{2}\left(\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}+\left|\frac{\partial \alpha_{i i}}{\partial p}-\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}+\mid \frac{\partial \alpha_{j j}}{\partial p}-\right. \\
+\left.\left.\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}+6\left(\left|\frac{\partial \alpha_{i i}}{\partial p}\right|^{2}+\left|\frac{\partial \alpha_{j j}}{\partial p}\right|^{2}+\left|\frac{\partial \alpha_{k k}}{\partial p}\right|^{2}\right)\right)
+\end{array}">
+
+
     
