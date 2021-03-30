@@ -505,7 +505,7 @@ with open('POL_TENSOR_PLUS.pkl','wb') as file:
 
 
 ########################################################################################################
-###                                      CALCULATE DERIVATIVES (See mathematical_formulae)           ###
+###                 CALCULATE DERIVATIVES (See mathematical formulae section of README.md)           ###
 ########################################################################################################
 
 with open('POL_TENSOR_MINUS.pkl' , 'rb') as file:
