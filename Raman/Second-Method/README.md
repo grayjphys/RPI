@@ -38,4 +38,5 @@ Necessary files for CP2K to be placed in the POL-[]-PROP-[] directories:
    
  Mathematical formulae:
  
-    $\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t\mathrm{e}^{i \omega t} E_{i}(t)}$
+ <img src="https://render.githubusercontent.com/render/math?math=\alpha_{i j}(\omega)=\frac{P_{j}^{1}(\omega)}{E_{i}(\omega)}=\frac{\int \mathrm{d} t \mathrm{e}^{i \omega t} P_{j}^{1}(t) \mathrm{e}^{-\Gamma t}}{\int \mathrm{d} t\mathrm{e}^{i \omega t} E_{i}(t)}">
+    
