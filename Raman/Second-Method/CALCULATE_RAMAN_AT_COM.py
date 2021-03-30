@@ -261,7 +261,7 @@ with open('EFIELD_Z_PLUS_FFT.pkl','wb') as file:
     pickle.dump(Efield_z_plus_fft, file)
 
 #######################################################################################################
-###                        COLLECT DIPOLE MOMENT VALUES AT CENTER OF BOX                            ###
+###                        COLLECT DIPOLE MOMENT VALUES AT CENTER OF MASS                           ###
 #######################################################################################################
 
 Moment_x_minus = []
@@ -272,11 +272,16 @@ Moment_z_minus = []
 Moment_z_plus = []
 
 for enum, d in enumerate(dirs): # loop over each vibrational mode, plus and minus
+	
     print("{0}%".format(50*enum/M))
+
     moments_x = []
     moments_y = []
     moments_z = []
+    
+    ### Prepare a file with just the moment data from the .mol file. ###
     os.system("grep X= " + d.name+"/Vibration-" + mol_name +".out | awk \'{print $2,$4,$6}\'>" + d.name+"/MOM.dat")
+
     with open(d.name+"/MOM.dat") as f:
         for i,line in enumerate(f):
             t = i*T
@@ -286,10 +291,11 @@ for enum, d in enumerate(dirs): # loop over each vibrational mode, plus and minu
                 mom_z0 = float(line.split()[2])
             else:
                 if len(moments_x) < N:
-                    moments_x.append((float(line.split()[0]) - mom_x0) * np.exp(-gamma*t))
+                    moments_x.append((float(line.split()[0]) - mom_x0) * np.exp(-gamma*t)) # gamma factor necessary to give a time decay for electronic transitions.
                     moments_y.append((float(line.split()[1]) - mom_y0) * np.exp(-gamma*t))
                     moments_z.append((float(line.split()[2]) - mom_z0) * np.exp(-gamma*t))
         # print(d.name,len(moments_x))
+	
     if "MINUS" in d.name:
         Moment_x_minus.append(moments_x)
         Moment_y_minus.append(moments_y)
@@ -314,6 +320,7 @@ Moment_y_plus_fft = np.zeros((M,N),dtype=complex)
 Moment_z_minus_fft = np.zeros((M,N),dtype=complex)
 Moment_z_plus_fft = np.zeros((M,N),dtype=complex)
 
+### Fourier transform dipole moments into frequency space. ###
 for i in range(M):
     if i not in skip:
         data = Moment_x_minus[i]
@@ -330,6 +337,8 @@ for i in range(M):
         Moment_z_plus_fft[i] = fft(data)
 
 print("************************** DIPOLE DONE ****************************")
+
+### Dump the result into a pickle file. This is just in case something goes wrong later on. It will save a lot of time to just read the values in. ###
 
 with open('MOMENT_X_MINUS_FFT.pkl','wb') as file:
     pickle.dump(Moment_x_minus_fft, file)
@@ -353,6 +362,8 @@ with open('MOMENT_Z_PLUS_FFT.pkl','wb') as file:
  ###                                        GET FREQUENCIES                                          ###
  #######################################################################################################
 
+### Find frequency (actually wavenumber) of vibrational modes from .mol file. units of cm^-1 ###
+
 os.system("grep -A {0} FREQ ".format(M) + mol_name_caps + "-VIBRATIONS-1.mol | tail -{0} > FREQ.dat".format(M))
 
 freqs = np.zeros(M)
@@ -363,7 +374,7 @@ with open("FREQ.dat") as f:
     for m,line in enumerate(f):
         wavenumbers[m] = float(line)
         freqs[m] = float(line) * 2.99792458E-5 * 2 * np.pi
-        bose_einstein_term[m] = 1 / (1 - np.exp((-planck * c * wavenumbers[m]) / KbT))
+        bose_einstein_term[m] = 1 / (1 - np.exp((-planck * c * wavenumbers[m]) / KbT)) # Phonons follow bose-einstein statistics.
 
 w_values = fftfreq(N,T)[:N // 2]
 
@@ -381,6 +392,7 @@ indices = [indices[0] - 1] + indices
  ###                               CALCULATE POLARIZABILITY TENSOR                                   ###
  #######################################################################################################
 
+### Read in previously pickled efields and moments. Comment the pickle sections and edit appropriately if you feel the need. ###
 with open('EFIELD_X_MINUS_FFT.pkl','rb') as file:
     Efield_x_minus_fft = pickle.load(file)
 
@@ -417,10 +429,12 @@ with open('MOMENT_Z_MINUS_FFT.pkl','rb') as file:
 with open('MOMENT_Z_PLUS_FFT.pkl','rb') as file:
     Moment_z_plus_fft = pickle.load(file)
 
-polarizability_tensor_minus = np.zeros((M,9,N),dtype = complex)
+polarizability_tensor_minus = np.zeros((M,9,N),dtype = complex) # 3x3 polarizability tensor for each mode, 
+                                                                # the N is due to the fact that the FFT will give a range of frequencies
+								# including the frequency of the mode. 
 
 for m in range(M):
-    if m not in skip:  
+    if m not in skip: # remember the skip from earlier? :P 
         for w in indices:
             if np.linalg.norm(Efield_x_minus_fft[m][w]) > 0:
                 polarizability_tensor_minus[m][0][w] = Moment_x_minus_fft[m][w] / Efield_x_minus_fft[m][w]
@@ -435,8 +449,9 @@ for m in range(M):
                 polarizability_tensor_minus[m][5][w] = Moment_y_minus_fft[m][w] / Efield_z_minus_fft[m][w]
                 polarizability_tensor_minus[m][8][w] = Moment_z_minus_fft[m][w] / Efield_z_minus_fft[m][w]
 
-polarizability_tensor_minus_interp = np.zeros((M,3,3),dtype=complex)
+polarizability_tensor_minus_interp = np.zeros((M,3,3),dtype=complex) 
 
+### interpolate the polarizability tensor at the frequency of the mode. ###
 for m in range(M):
     if m not in skip:
         polarizability_tensor_minus_interp[m][0][0] = interp1d(w_values[indices],polarizability_tensor_minus[m][0][indices])(freqs[m])
@@ -472,6 +487,7 @@ for m in range(M):
 
 polarizability_tensor_plus_interp = np.zeros((M,3,3),dtype=complex)
 
+### interpolate the polarizability tensor at the frequency of the mode. ###
 for m in range(M):
     if m not in skip:
         polarizability_tensor_plus_interp[m][0][0] = interp1d(w_values[indices],polarizability_tensor_plus[m][0][indices])(freqs[m])
@@ -489,7 +505,7 @@ with open('POL_TENSOR_PLUS.pkl','wb') as file:
 
 
 ########################################################################################################
-###                                      CALCULATE DERIVATIVES                                       ###
+###                                      CALCULATE DERIVATIVES (See mathematical_formulae)           ###
 ########################################################################################################
 
 with open('POL_TENSOR_MINUS.pkl' , 'rb') as file:
@@ -528,7 +544,7 @@ for m in range(M):
 
 x = np.linspace(500,1700,1000)
 
-def lorentzian(x,I):
+def lorentzian(x,I): # Create spectrum with a broadening factor. This gives a more realistic spectrum because of quantum fluctuations.
     broadening = 20
     gamma_sqr= (0.5*broadening)**2
     L = 0
@@ -552,7 +568,7 @@ with open(folder + "/" + data_name + "_SPECTRUM.dat",'r') as f:
         x.append(float(line.split()[0]))
         data.append(float(line.split()[1]))
 
-
+### Plot the spectrum ###
 plt.plot(x,data,label=data_name)
 plt.legend(fontsize=15)
 plt.xlabel(r'Wavenumber cm$^{-1}$',fontsize=25)
